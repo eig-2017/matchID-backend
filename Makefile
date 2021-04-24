@@ -120,7 +120,10 @@ version: frontend-version
 	@echo ${APP_GROUP} ${APP} ${APP_VERSION}
 
 frontend-version:
-	@cd ${FRONTEND} && make -s version
+	@if [ -d "${FRONTEND}" ];then\
+		cd ${FRONTEND} && make -s version;\
+	fi
+
 
 version-files:
 	@export LC_COLLATE=C;export LC_ALL=C;cat tagfiles.version | xargs -I '{}' find {} -type f | egrep -v 'conf/security/(github|facebook|twitter).yml$$|.tar.gz$$|.pyc$$|.gitignore$$' | sort
@@ -407,7 +410,9 @@ frontend-docker-check: frontend-config
 	@make -C ${FRONTEND} frontend-docker-check GIT_BRANCH="${GIT_FRONTEND_BRANCH}"
 
 frontend-clean:
-	@make -C ${FRONTEND} frontend-clean GIT_BRANCH="${GIT_FRONTEND_BRANCH}"
+	@if [ -d "${FRONTEND}" ];then\
+		make -C ${FRONTEND} frontend-clean GIT_BRANCH="${GIT_FRONTEND_BRANCH}";\
+	fi;
 
 frontend-update:
 	@cd ${FRONTEND}; git pull ${GIT_ORIGIN} "${GIT_FRONTEND_BRANCH}"
@@ -416,13 +421,17 @@ frontend-dev: frontend-config
 	@make -C ${FRONTEND} frontend-dev GIT_BRANCH="${GIT_FRONTEND_BRANCH}"
 
 frontend-dev-stop:
-	@make -C ${FRONTEND} frontend-dev-stop GIT_BRANCH="${GIT_FRONTEND_BRANCH}"
+	@if [ -d "${FRONTEND}" ];then\
+		make -C ${FRONTEND} frontend-dev-stop GIT_BRANCH="${GIT_FRONTEND_BRANCH}";\
+	fi
 
 frontend-build: network frontend-config
 	@make -C ${FRONTEND} frontend-build GIT_BRANCH="${GIT_FRONTEND_BRANCH}"
 
 frontend-stop:
-	@make -C ${FRONTEND} frontend-stop GIT_BRANCH="${GIT_FRONTEND_BRANCH}"
+	@if [ -d "${FRONTEND}" ];then\
+		make -C ${FRONTEND} frontend-stop GIT_BRANCH="${GIT_FRONTEND_BRANCH}";\
+	fi
 
 frontend: frontend-docker-check
 	@make -C ${FRONTEND} frontend GIT_BRANCH="${GIT_FRONTEND_BRANCH}"
